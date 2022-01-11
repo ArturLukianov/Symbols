@@ -30,7 +30,7 @@ class Human(Character):
         self.sub_status = None
         self.target = None
         self.short_memory = dict()
-        self.short_memory_reset_timer = 30
+        self.short_memory_reset_timer = 100
         self.is_alive = True
 
         if self.profession is None:
@@ -65,7 +65,7 @@ class Human(Character):
         self.short_memory_reset_timer -= 1
         if self.short_memory_reset_timer <= 0:
             self.short_memory = dict()
-            self.short_memory_reset_timer = 30
+            self.short_memory_reset_timer = 100
 
         if self.hunger <= 0:
             self.is_alive = False
@@ -110,6 +110,10 @@ class Human(Character):
                self.status != 'getting food':
             self.change_status('eating')
 
+        if self.status == 'resting':
+            self.rest(tile, time)
+            return
+
         if self.status == 'eating':
             self.eat(tile, time)
             return
@@ -123,6 +127,9 @@ class Human(Character):
             return
 
     def work(self, tile, time):
+        pass
+
+    def rest(self, tile, time):
         pass
 
     def eat(self, tile, time):
@@ -158,22 +165,26 @@ class Human(Character):
         self.change_status('sleeping')
 
 
+
 class HumanPeasant(Human):
     profession = 'peasant'
+
+    def rest(self, tile, time):
+        if len(self.short_memory.get('checked fields', [])) != len(tile.items):
+            self.change_status('working')
+            return
+
 
     def work(self, tile, time):
         if self.sub_status == None:
             self.change_sub_status('checking fields')
 
-        if self.sub_status == 'resting':
-            if len(self.short_memory.get('checking fields', [])) != len(tile.items):
-                self.change_sub_status(None)
-                return
-
 
         if self.sub_status == 'checking fields':
-            if len(self.short_memory.get('checking fields', [])) == len(tile.items):
-                self.change_sub_status('resting')
+            if len(self.short_memory.get('checked fields', [])) == len(tile.items):
+                self.change_status('resting')
+                return
+
             if self.target is None or \
                not self.target.is_ground or \
                self.target in self.short_memory.get('checked fields', []):
