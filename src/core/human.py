@@ -30,7 +30,7 @@ class Human(Character):
         self.sub_status = None
         self.target = None
         self.short_memory = dict()
-        self.short_memory_reset_timer = 200
+        self.short_memory_reset_timer = 30
         self.is_alive = True
 
         if self.profession is None:
@@ -65,7 +65,7 @@ class Human(Character):
         self.short_memory_reset_timer -= 1
         if self.short_memory_reset_timer <= 0:
             self.short_memory = dict()
-            self.short_memory_reset_timer = 200
+            self.short_memory_reset_timer = 30
 
         if self.hunger <= 0:
             self.is_alive = False
@@ -133,8 +133,9 @@ class Human(Character):
         for ind, item in enumerate(self.inventory):
             if item.is_food:
                 self.inventory.pop(ind)
-                if item.if_fruit:
-                    self.inventory.append(item.seeds(item.seeds_count))
+                if item.is_fruit:
+                    seeds = item.seeds()
+                    self.inventory.append(seeds)
                 self.hunger += item.value
                 return
 
@@ -164,7 +165,15 @@ class HumanPeasant(Human):
         if self.sub_status == None:
             self.change_sub_status('checking fields')
 
+        if self.sub_status == 'resting':
+            if len(self.short_memory.get('checking fields', [])) != len(tile.items):
+                self.change_sub_status(None)
+                return
+
+
         if self.sub_status == 'checking fields':
+            if len(self.short_memory.get('checking fields', [])) == len(tile.items):
+                self.change_sub_status('resting')
             if self.target is None or \
                not self.target.is_ground or \
                self.target in self.short_memory.get('checked fields', []):
@@ -181,6 +190,10 @@ class HumanPeasant(Human):
                     if has_seeds:
                         self.change_sub_status('planting')
                     else:
+                        checked = self.short_memory.get('checked fields', [])
+                        checked.append(self.target)
+                        self.short_memory['checked fields'] = checked
+                        self.target = None
                         self.change_sub_status('checking fields')
 
 
@@ -197,7 +210,7 @@ class HumanPeasant(Human):
         if self.sub_status == 'going to unchecked ground':
             for item in tile.items:
                 if item.is_ground and \
-                   item not in self.short_memory.get('checked grounds', []):
+                   item not in self.short_memory.get('checked fields', []):
                     self.target = item
                     self.change_sub_status('checking fields')
                     break

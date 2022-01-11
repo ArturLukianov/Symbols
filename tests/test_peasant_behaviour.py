@@ -19,7 +19,7 @@ def test_peasant_planting():
     tile.chars.append(p)
     tile.items.append(field)
 
-    for i in range(200):
+    for i in range(100):
         tile.update(600)
 
     assert field.seeds_count == 10

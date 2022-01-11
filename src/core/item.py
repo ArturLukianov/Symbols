@@ -27,7 +27,6 @@ class Fruit(Food):
 class Cucumber(Fruit):
     name = 'cucumber'
     value = 1000
-    seeds_count = 3
 
 
 class Seeds(Item):
@@ -40,6 +39,7 @@ class CucumberSeeds(Seeds):
     name = 'cucumber seeds'
     plant = Cucumber
     turns_to_grow = 100
+    value = 3
 
 
 class Field(Item):
@@ -64,6 +64,7 @@ class Field(Item):
                 for i in range(seed.value):
                     self.fruits.append(seed.plant())
                 ind_to_pop.append(ind)
+                self.seeds_count -= seed.value
 
         for ind in ind_to_pop:
             self.seeds.pop(ind)

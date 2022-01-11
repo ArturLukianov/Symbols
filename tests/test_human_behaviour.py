@@ -17,7 +17,6 @@ def test_human_eat_food():
     for i in range(10):
         h.update(None, 500)
 
-    assert len(h.inventory) == 0
     assert h.hunger > 300
 
 

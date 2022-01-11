@@ -5,6 +5,7 @@ class Tile(object):
         self.name = None
         self.enviroment = None
 
+
     def update(self, time):
         for char in self.chars:
             char.update(self, time)
