@@ -40,3 +40,38 @@ def test_peasant_gathering():
 
     assert len(p.inventory) != 0
     assert len(field.fruits) == 0
+
+
+def test_peasant_work_cycle():
+    p = HumanPeasant()
+    p.hunger = 100000
+    tile = Tile()
+    field = Field()
+    s = CucumberSeeds()
+    s.value = 10
+
+    p.inventory.append(s)
+    tile.items.append(field)
+    tile.chars.append(p)
+
+    for i in range(800):
+        tile.update(600)
+
+    assert len(p.inventory) != 0
+    assert p.inventory[0].is_food
+
+
+def test_peasant_can_keep_alive():
+    p = HumanPeasant()
+    tile = Tile()
+    field = Field()
+    c = Cucumber()
+
+    p.inventory.append(c)
+    tile.items.append(field)
+    tile.chars.append(p)
+
+    for i in range(31 * 1000):
+        tile.update(i)
+
+    assert p.is_alive

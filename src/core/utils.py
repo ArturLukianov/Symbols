@@ -11,3 +11,6 @@ def random_name():
 
 def is_night(time):
     return (time % DAY_LENGTH) < DAY_LENGTH // 2
+
+def is_day(time):
+    return not is_night(time)

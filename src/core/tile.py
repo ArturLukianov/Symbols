@@ -8,3 +8,6 @@ class Tile(object):
     def update(self, time):
         for char in self.chars:
             char.update(self, time)
+
+        for item in self.items:
+            item.update(self, time)
