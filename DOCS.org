@@ -1,0 +1,5 @@
+#+TITLE: Documentation
+* Symbols
+Symbols is a world emulation zero player game.
+** Core (src/core)
+** API (src/api)
