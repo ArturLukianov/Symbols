@@ -57,6 +57,9 @@ class Human(Character):
             self.sub_status = None
             self.log_status()
 
+    def log_death(self, reason):
+        logger.info(f'"{self.name}" died from {reason}')
+
 
     def update(self, tile, time):
         if not self.is_alive:
@@ -68,6 +71,7 @@ class Human(Character):
             self.short_memory_reset_timer = 100
 
         if self.hunger <= 0:
+            self.log_death('hunger')
             self.is_alive = False
 
         if self.status == 'sleeping':
