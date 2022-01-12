@@ -7,10 +7,17 @@
 Symbols is a world emulation zero player game.
 Here are documentation for game mechanics, classes and functions.
 ** [[file:src/core/][Core]]
+
+*** Human
+Human is a basic Character.
+
+Humans can have a profession:
+  - Peasant (works with fruits and field)
+
 *** Human state graph
 #+BEGIN_SRC dot :file humanstates.png :cmdline -Kdot -Tpng :exports results
  digraph HumanStates {
-    node [shape="rectangle"]
+    node [shape="rectangle" margin="0.1 0"]
     sleeping [fontcolor=blue color=blue]
     dead [fontcolor=red color=red]
     sleeping -> eating [label="too hungry"]
@@ -27,11 +34,38 @@ Here are documentation for game mechanics, classes and functions.
     resting -> dead [label="starved"]
     eating -> dead [label="starved"]
     "getting food" -> dead [label="starved"]
+    sleeping -> dead [label="starved"]
+    sleeping -> None [label="day"]
  }
 
 #+END_SRC
 
 #+RESULTS:
 [[file:humanstates.png]]
+*** Peasant work graph
+#+BEGIN_SRC dot :file peasantworkstates.png :cmdline -Kdot -Tpng :exports results
+ digraph PeasantWorkStates {
+    node [shape="rectangle" margin="0.1 0"]
+    resting [fontcolor=green color=green shape=cds]
+    working [fontcolor=orange color=orange shape=cds]
+    working -> None
+    None -> "checking fields"
+    "checking fields" -> "going to unchecked ground" [label="no ground"]
+    "going to unchecked ground" -> "checking fields"
+    "checking fields" -> "watering" [label="has unwatered seeds"]
+    "watering" -> "getting water" [label="no water"]
+    "getting water" -> "watering"
+    "watering" -> "checking fields"
+    "checking fields" -> "planting" [label="has seeds"]
+    "checking fields" -> "gathering fruits" [label="has fruits"]
+    "planting" -> "checking fields"
+    "gathering fruits" -> "checking fields"
+    "checking fields" -> "resting"
+ }
+
+#+END_SRC
+
+#+RESULTS:
+[[file:peasantworkstates.png]]
 
 ** [[file:src/api/][API]]

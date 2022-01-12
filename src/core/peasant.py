@@ -71,7 +71,7 @@ class HumanPeasant(Human):
                 if seeds is not None:
                     seeds.water += water.value
                     self.inventory.pop(water_ind)
-                self.change_sub_status(None)
+                self.change_sub_status('checking fields')
             else:
                 self.change_sub_status('getting water')
 
