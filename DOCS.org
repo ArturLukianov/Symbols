@@ -1,5 +1,37 @@
 #+TITLE: Documentation
+#+AUTHOR: ArturLukianov
+#+DESCRIPTION: Documentation for Symbols
+#+SETUPFILE: https://fniessen.github.io/org-html-themes/org/theme-readtheorg.setup
+
 * Symbols
 Symbols is a world emulation zero player game.
-** Core (src/core)
-** API (src/api)
+Here are documentation for game mechanics, classes and functions.
+** [[file:src/core/][Core]]
+*** Human state graph
+#+BEGIN_SRC dot :file humanstates.png :cmdline -Kdot -Tpng :exports results
+ digraph HumanStates {
+    node [shape="rectangle"]
+    sleeping [fontcolor=blue color=blue]
+    dead [fontcolor=red color=red]
+    sleeping -> eating [label="too hungry"]
+    None -> working
+    working -> eating [label="too hungry"]
+    working -> resting [label="work done"]
+    resting -> eating [label="hungry"]
+    eating -> "getting food" [label="no food"]
+    "getting food" -> eating [label="found food"]
+    working -> sleeping [label="night"]
+    resting -> sleeping [label="night"]
+    None -> dead [label="starved"]
+    working -> dead [label="starved"]
+    resting -> dead [label="starved"]
+    eating -> dead [label="starved"]
+    "getting food" -> dead [label="starved"]
+ }
+
+#+END_SRC
+
+#+RESULTS:
+[[file:humanstates.png]]
+
+** [[file:src/api/][API]]
