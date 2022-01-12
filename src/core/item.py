@@ -7,6 +7,7 @@ class Item(object):
     def __getattr__(self, name):
         if name.startswith('is_'):
             return False
+        return object.__getattribute__(self, name)
 
 
 
@@ -40,6 +41,8 @@ class CucumberSeeds(Seeds):
     plant = Cucumber
     turns_to_grow = 100
     value = 3
+    water = 200
+    water_multiplier = 1
 
 
 class Field(Item):
@@ -60,6 +63,10 @@ class Field(Item):
         ind_to_pop = []
         for ind, seed in enumerate(self.seeds):
             seed.turns_to_grow -= 1
+            seed.water -= seed.value * seed.water_multiplier
+            if seed.water <= 0:
+                ind_to_pop.append(ind)
+                continue
             if seed.turns_to_grow <= 0:
                 for i in range(seed.value):
                     self.fruits.append(seed.plant())
@@ -68,3 +75,24 @@ class Field(Item):
 
         for ind in ind_to_pop:
             self.seeds.pop(ind)
+
+
+
+class Water(Item):
+    is_water = True
+    value = 1
+
+
+class WaterSource(Item):
+    is_pickable = False
+    is_water_source = True
+    value = 10
+
+    def get_water(self):
+        water = Water()
+        water.value = self.value
+        return water
+
+
+class Well(WaterSource):
+    value = 100

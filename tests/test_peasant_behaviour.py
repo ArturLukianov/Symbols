@@ -11,6 +11,7 @@ def test_peasant_planting():
     p = HumanPeasant()
     s = CucumberSeeds()
     s.value = 10
+    s.water_multiplier = 0
     tile = Tile()
     field = Field()
 
@@ -49,6 +50,7 @@ def test_peasant_work_cycle():
     field = Field()
     s = CucumberSeeds()
     s.value = 10
+    s.water_multiplier = 0
 
     p.inventory.append(s)
     tile.items.append(field)
@@ -66,12 +68,33 @@ def test_peasant_can_keep_alive():
     tile = Tile()
     field = Field()
     c = Cucumber()
+    well = Well()
 
     p.inventory.append(c)
     tile.items.append(field)
+    tile.items.append(well)
     tile.chars.append(p)
 
     for i in range(31 * 1000):
         tile.update(i)
 
     assert p.is_alive
+
+
+def test_peasant_water_plants():
+    p = HumanPeasant()
+    tile = Tile()
+    field = Field()
+    s = CucumberSeeds()
+    well = Well()
+
+    tile.items.append(field)
+    tile.items.append(well)
+    tile.chars.append(p)
+    field.plant(s)
+
+    for i in range(80):
+        tile.update(600)
+
+    assert len(field.seeds) > 0
+    assert field.seeds[0].water > 0
