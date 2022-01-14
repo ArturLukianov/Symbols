@@ -57,3 +57,7 @@ class Resource(Item):
 
 class Ore(Resource):
     is_ore = True
+
+
+class Wood(Resource):
+    if_wood = True

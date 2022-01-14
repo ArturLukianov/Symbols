@@ -1,4 +1,4 @@
-from .item import Resource, Water
+from .item import Resource, Water, Ore, Wood
 
 class Location(object):
     name = None
@@ -87,6 +87,18 @@ class ResourceSource(Location):
 
 class Mine(ResourceSource):
     is_mine = True
+    resource = 'iron'
+
+    def take_resource(self):
+        if self.amount > 0:
+            self.amount -= 1
+        return Ore(self.resource)
 
 class Forest(ResourceSource):
     is_forest = True
+    resource = 'pine'
+
+    def take_resource(self):
+        if self.amount > 0:
+            self.amount -= 1
+        return Wood(self.resource)
