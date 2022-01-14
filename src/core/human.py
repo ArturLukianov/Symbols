@@ -94,7 +94,8 @@ class Human(Character):
 
         if self.hunger < 300 and \
            self.status != 'eating' and \
-               self.status != 'getting food':
+               self.status != 'getting food' and \
+                   self.short_memory.get('has food', True):
             self.change_status('eating')
             return
 
@@ -113,7 +114,8 @@ class Human(Character):
 
         if self.hunger < 600 and \
            self.status != 'eating' and \
-               self.status != 'getting food':
+               self.status != 'getting food' and \
+                   self.short_memory.get('has food', True):
             self.change_status('eating')
 
         if self.status == 'resting':
@@ -166,6 +168,9 @@ class Human(Character):
                 self.inventory.append(item)
                 self.change_status('eating')
                 return
+
+        self.short_memory['has food'] = False
+        self.change_status(None)
 
     def go_sleep(self, tile, time):
         self.change_status('sleeping')

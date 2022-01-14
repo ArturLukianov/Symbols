@@ -4,7 +4,7 @@ import logging
 sys.path.append('.')
 sys.path.append('..')
 from src.core.worldthread import WorldThread
-from src.core import Location, HumanPeasant, Cucumber, Well, Field
+from src.core import Location, HumanPeasant, Cucumber, Well, Field, Mine
 
 
 import eventlet
@@ -39,22 +39,35 @@ logger.addHandler(ch)
 logger.addHandler(sh)
 
 
+locs = [Location(), Well(), Field(), Mine(10)]
+locs[0].add_char(HumanPeasant())
+locs[0].connect(locs[1])
+locs[0].chars[0].inventory.append(Cucumber())
+locs[0].connect(locs[2])
+locs[1].connect(locs[2])
+locs[0].connect(locs[3])
+world = WorldThread(locs=locs)
+
 @sio.event
 def connect(sid, environ):
     print('connect', sid)
 
-@sio.event
-def get_locs(sid, environ):
-    sio.emit('locs', [])
+    locs = {
+        'nodes': [loc.to_d3() for loc in world.locs],
+        'links': []
+    }
+
+    for loc in world.locs:
+        for link in loc.locs:
+            locs['links'].append({
+                'source': id(loc),
+                'target': id(link)
+            })
+
+    sio.emit('locs', locs)
 
 
 if __name__ == "__main__":
-    locs = [Location(), Well(), Field()]
-    locs[0].add_char(HumanPeasant())
-    locs[0].connect(locs[1])
-    locs[0].chars[0].inventory.append(Cucumber())
-    locs[0].connect(locs[2])
-    world = WorldThread(locs=locs)
     world.start()
 
 

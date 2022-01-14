@@ -1,7 +1,9 @@
 from .item import Resource, Water, Ore, Wood
 
 class Location(object):
-    name = None
+    name = 'Location'
+    color = 'gray'
+    size = 5
 
     def __init__(self):
         self.items = []
@@ -30,12 +32,22 @@ class Location(object):
         self.chars.append(char)
         char.loc = self
 
+    def to_d3(self):
+        return {
+            'id': id(self),
+            'label': self.name,
+            'color': self.color,
+            'size': self.size * 10
+        }
+
 
 
 
 class Field(Location):
     name = 'Field'
+    color = 'green'
     is_plantable = True
+    size = 20
 
     seeds_count = 0
 
@@ -60,6 +72,7 @@ class Field(Location):
             if seed.water <= 0:
                 ind_to_pop.append(ind)
                 continue
+
             if seed.turns_to_grow <= 0:
                 for i in range(seed.value):
                     self.fruits.append(seed.plant())
@@ -77,6 +90,8 @@ class Field(Location):
 class WaterSource(Location):
     is_water_source = True
     value = 10
+    color = 'blue'
+    size = 10
 
     def get_water(self):
         water = Water()
@@ -94,6 +109,7 @@ class ResourceSource(Location):
     def __init__(self, amount):
         super().__init__()
         self.amount = amount
+        self.size = int(amount * 1.2)
 
     def take_resource(self):
         if self.amount > 0:
@@ -102,8 +118,10 @@ class ResourceSource(Location):
 
 
 class Mine(ResourceSource):
+    name = 'Mine'
     is_mine = True
     resource = 'iron'
+    color = 'brown'
 
     def take_resource(self):
         if self.amount > 0:

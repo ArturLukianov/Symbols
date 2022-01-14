@@ -44,6 +44,9 @@ class CucumberSeeds(Seeds):
     water = 200
     water_multiplier = 1
 
+    def __repr__(self):
+        return f'<CucumberSeeds ({self.water})>'
+
 
 class Water(Item):
     is_water = True
