@@ -7,9 +7,9 @@ sys.path.append('..')
 from src.core import *
 
 
-def test_miner_gathering():
-	m = HumanMiner()
-	s = Mine(10)
+def test_woodcutter_gathering():
+	m = HumanWoodcutter()
+	s = Forest(10)
 	loc = Location()
 	loc.connect(s)
 	loc.chars.append(m)
@@ -22,13 +22,13 @@ def test_miner_gathering():
 	assert s.amount != 10
 
 
-def test_miner_source_search():
+def test_woodcutter_source_search():
 	assert True
 
 
-def test_miner_work_cycle():
+def test_woodcutter_work_cycle():
 	assert True
 
 
-def test_miner_can_keep_alive():
+def test_woodcutter_can_keep_alive():
 	assert True

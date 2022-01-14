@@ -1,10 +1,10 @@
+from .item import Resource, Water
+
 class Location(object):
     name = None
-
-    def __init__(self):
-        self.items = []
-        self.chars = []
-        self.locs = []
+    items = []
+    chars = []
+    locs = []
 
 
     def update(self, time):
@@ -87,5 +87,6 @@ class ResourceSource(Location):
 
 class Mine(ResourceSource):
     is_mine = True
-    def __init__(self, resource):
-        self.resource = resource
+
+class Forest(ResourceSource):
+    is_forest = True

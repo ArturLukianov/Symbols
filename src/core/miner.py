@@ -8,7 +8,7 @@ class HumanMiner(HumanGatherer):
 	def __init__(self, name=None):
 		super().__init__(name)
 
-	def work(self, tile, time):
+	def work(self, location, time):
 		if self.sub_status == None:
 			self.change_sub_status('mining')
 
@@ -27,7 +27,7 @@ class HumanMiner(HumanGatherer):
 				self.change_sub_status('checking mine')
 			else:
 				mines = []
-				for i in tile.items:
+				for i in location.locs:
 					if i.is_mine:
 						mines.append(i)
 				self.short_memory['unchecked mines'] = mines
