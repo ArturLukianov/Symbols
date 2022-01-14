@@ -99,11 +99,6 @@ class Human(Character):
             self.change_status('eating')
             return
 
-        if is_night(time) and self.status != 'eating' and \
-           self.status != 'getting food':
-            self.change_status('sleeping')
-            return
-
         if self.status is None:
             self.change_status('working')
             return
@@ -135,10 +130,14 @@ class Human(Character):
             return
 
     def work(self, tile, time):
-        pass
+        self.change_status('resting')
 
     def rest(self, tile, time):
-        pass
+        if is_night(time) and self.status != 'eating' and \
+           self.status != 'getting food':
+            self.change_status('sleeping')
+            return
+
 
     def eat(self, tile, time):
         if self.hunger > 700:

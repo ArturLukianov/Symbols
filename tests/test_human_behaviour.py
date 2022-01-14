@@ -43,7 +43,8 @@ def test_human_get_food():
 def test_human_sleep():
     h = Human()
 
-    h.update(None, 0)
+    for i in range(20):
+        h.update(None, 0)
     assert h.status == 'sleeping'
 
 def test_human_starve():

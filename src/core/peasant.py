@@ -6,6 +6,8 @@ class HumanPeasant(Human):
     profession = 'peasant'
 
     def rest(self, loc, time):
+        super().rest(loc, time)
+
         if len(self.short_memory.get('checked fields', [])) != \
            self.short_memory.get('fields count', -1):
             self.change_status('working')
