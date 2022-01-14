@@ -9,12 +9,6 @@ from .utils import is_night, is_day, random_name
 logger = logging.getLogger('symbols')
 logger.setLevel(logging.INFO)
 
-ch = logging.StreamHandler()
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-ch.setFormatter(formatter)
-
-logger.addHandler(ch)
-
 
 class Human(Character):
     profession = None

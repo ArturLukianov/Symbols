@@ -4,7 +4,7 @@ from threading import Thread
 import time
 
 
-DELAY = 0.01
+DELAY = 0.1
 
 
 class WorldThread(Thread):

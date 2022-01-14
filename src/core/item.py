@@ -45,54 +45,7 @@ class CucumberSeeds(Seeds):
     water_multiplier = 1
 
 
-class Field(Item):
-    is_pickable = False
-    is_ground = True
-
-    seeds_count = 0
-    seeds = []
-    fruits = []
-
-    def plant(self, seeds):
-        self.seeds_count += seeds.value
-        seeds.is_planted = True
-        seeds.is_pickable = False
-        self.seeds.append(seeds)
-
-    def update(self, tile, time):
-        ind_to_pop = []
-        for ind, seed in enumerate(self.seeds):
-            seed.turns_to_grow -= 1
-            seed.water -= seed.value * seed.water_multiplier
-            if seed.water <= 0:
-                ind_to_pop.append(ind)
-                continue
-            if seed.turns_to_grow <= 0:
-                for i in range(seed.value):
-                    self.fruits.append(seed.plant())
-                ind_to_pop.append(ind)
-                self.seeds_count -= seed.value
-
-        for ind in ind_to_pop:
-            self.seeds.pop(ind)
-
-
-
 class Water(Item):
     is_water = True
     value = 1
 
-
-class WaterSource(Item):
-    is_pickable = False
-    is_water_source = True
-    value = 10
-
-    def get_water(self):
-        water = Water()
-        water.value = self.value
-        return water
-
-
-class Well(WaterSource):
-    value = 100

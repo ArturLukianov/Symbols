@@ -21,20 +21,20 @@ def test_human_eat_food():
 
 
 def test_human_get_food():
-    tile = Tile()
+    loc = Location()
     h = Human()
     f = Cucumber()
 
     f.value = 1000
     h.hunger = 300
 
-    tile.items.append(f)
-    tile.chars.append(h)
+    loc.items.append(f)
+    loc.chars.append(h)
 
     max_turns = 100
 
     for i in range(max_turns):
-        tile.update(i)
+        loc.update(i)
         print(h.hunger)
 
     assert h.hunger > 1000
@@ -48,10 +48,10 @@ def test_human_sleep():
 
 def test_human_starve():
     h = Human()
-    t = Tile()
+    l = Location()
 
     for i in range(1000):
-        h.update(t, i)
+        h.update(l, i)
 
     assert h.hunger <= 0
     assert not h.is_alive
