@@ -25,7 +25,9 @@ class Human(Character):
         self.target = None
         self.short_memory = dict()
         self.short_memory_reset_timer = 100
+        self.long_memory = dict()
         self.is_alive = True
+        self.loc = None
 
         if self.profession is None:
             logger.info(f'New human "{self.name}" is created')
@@ -39,6 +41,10 @@ class Human(Character):
         else:
             logger.info(f'"{self.name}" [{self.hunger}] ({self.profession}) is {self.status} - {self.sub_status}')
 
+    def log_death(self, reason):
+        logger.info(f'"{self.name}" died from {reason}')
+
+
 
     def change_sub_status(self, new_sub_status):
         if self.sub_status != new_sub_status:
@@ -51,9 +57,11 @@ class Human(Character):
             self.sub_status = None
             self.log_status()
 
-    def log_death(self, reason):
-        logger.info(f'"{self.name}" died from {reason}')
 
+    def go_to(self, next_loc):
+        if self.loc is not None:
+            self.loc.chars.remove(self)
+        next_loc.add_char(self)
 
     def update(self, tile, time):
         if not self.is_alive:

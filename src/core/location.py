@@ -24,6 +24,10 @@ class Location(object):
         self.locs.append(loc)
         loc.locs.append(self)
 
+    def add_char(self, char):
+        self.chars.append(char)
+        char.loc = self
+
 
 
 
@@ -55,8 +59,12 @@ class Field(Location):
                 ind_to_pop.append(ind)
                 self.seeds_count -= seed.value
 
-        for ind in ind_to_pop:
-            self.seeds.pop(ind)
+
+        new_seeds = []
+        for ind, seed in enumerate(self.seeds):
+            if ind not in ind_to_pop:
+                new_seeds.append(seed)
+        self.seeds = new_seeds
 
 
 class WaterSource(Location):

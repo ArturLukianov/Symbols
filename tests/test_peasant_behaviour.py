@@ -17,7 +17,7 @@ def test_peasant_planting():
 
     p.inventory.append(s)
 
-    loc.chars.append(p)
+    loc.add_char(p)
     loc.connect(field)
 
     for i in range(100):
@@ -32,6 +32,7 @@ def test_peasant_gathering():
     loc = Location()
     field = Field()
     c = Cucumber()
+    p.hunger = 10000
 
     field.fruits.append(c)
     loc.chars.append(p)
