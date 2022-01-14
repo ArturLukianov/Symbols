@@ -2,9 +2,11 @@ from .item import Resource, Water, Ore, Wood
 
 class Location(object):
     name = None
-    items = []
-    chars = []
-    locs = []
+
+    def __init__(self):
+        self.items = []
+        self.chars = []
+        self.locs = []
 
 
     def update(self, time):
@@ -36,8 +38,11 @@ class Field(Location):
     is_plantable = True
 
     seeds_count = 0
-    seeds = []
-    fruits = []
+
+    def __init__(self):
+        super().__init__()
+        self.seeds = []
+        self.fruits = []
 
     def plant(self, seeds):
         self.seeds_count += seeds.value
@@ -85,6 +90,7 @@ class Well(WaterSource):
 class ResourceSource(Location):
     resource = 'stone'
     def __init__(self, amount):
+        super().__init__()
         self.amount = amount
 
     def take_resource(self):
