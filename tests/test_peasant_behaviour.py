@@ -74,9 +74,9 @@ def test_peasant_can_keep_alive():
     well = Well()
 
     p.inventory.append(c)
-    loc.items.append(field)
-    loc.items.append(well)
     loc.chars.append(p)
+    loc.connect(field)
+    loc.connect(well)
 
     for i in range(31 * 1000):
         loc.update(i)
@@ -91,9 +91,9 @@ def test_peasant_water_plants():
     s = CucumberSeeds()
     well = Well()
 
-    loc.items.append(field)
-    loc.items.append(well)
     loc.chars.append(p)
+    loc.connect(field)
+    loc.connect(well)
     field.plant(s)
 
     for i in range(80):
