@@ -72,3 +72,20 @@ class WaterSource(Location):
 class Well(WaterSource):
     name = "Well"
     value = 100
+
+
+class ResourceSource(Location):
+    resource = 'stone'
+    def __init__(self, amount):
+        self.amount = amount
+
+    def take_resource(self):
+        if self.amount > 0:
+            self.amount -= 1
+        return Resource(self.resource)
+
+
+class Mine(ResourceSource):
+    is_mine = True
+    def __init__(self, resource):
+        self.resource = resource

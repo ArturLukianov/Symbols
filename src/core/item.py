@@ -49,3 +49,11 @@ class Water(Item):
     is_water = True
     value = 1
 
+
+class Resource(Item):
+    def __init__(self, name):
+        self.name = name
+
+
+class Ore(Resource):
+    is_ore = True
