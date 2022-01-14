@@ -6,7 +6,8 @@ class HumanPeasant(Human):
     profession = 'peasant'
 
     def rest(self, loc, time):
-        if len(self.short_memory.get('checked fields', [])) != len(loc.items):
+        if len(self.short_memory.get('checked fields', [])) != \
+           self.short_memory.get('fields count', -1):
             self.change_status('working')
             return
 
@@ -23,6 +24,7 @@ class HumanPeasant(Human):
                 self.change_status('resting')
                 self.go_to(self.long_memory['start location'])
                 return
+
 
             if self.target is None or \
                not self.target.is_plantable or \

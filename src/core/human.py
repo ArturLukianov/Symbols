@@ -69,7 +69,7 @@ class Human(Character):
 
         self.short_memory_reset_timer -= 1
         if self.short_memory_reset_timer <= 0:
-            self.short_memory = dict()
+            self.short_memory.clear()
             self.short_memory_reset_timer = 100
 
         if self.hunger <= 0:

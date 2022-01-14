@@ -35,7 +35,7 @@ def test_peasant_gathering():
     p.hunger = 10000
 
     field.fruits.append(c)
-    loc.chars.append(p)
+    loc.add_char(p)
     loc.connect(field)
 
     for i in range(200):
@@ -56,7 +56,7 @@ def test_peasant_work_cycle():
     s.water_multiplier = 0
 
     p.inventory.append(s)
-    loc.chars.append(p)
+    loc.add_char(p)
     loc.connect(field)
 
     for i in range(800):
@@ -75,7 +75,7 @@ def test_peasant_can_keep_alive():
     well = Well()
 
     p.inventory.append(c)
-    loc.chars.append(p)
+    loc.add_char(p)
     loc.connect(field)
     loc.connect(well)
 

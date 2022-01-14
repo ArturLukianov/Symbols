@@ -9,20 +9,20 @@ DELAY = 0.1
 
 class WorldThread(Thread):
     def __init__(self, group=None, target=None, name=None,
-                 tiles=None):
+                 locs=None):
         super(WorldThread, self).__init__(group=group,
                                           target=target,
                                           name=name)
 
-        if tiles is None:
-            tiles = []
-        self.tiles = tiles
+        if locs is None:
+            locs = []
+        self.locs = locs
         self.timer = 0
 
     def run(self):
         while True:
-            for tile in self.tiles:
-                tile.update(self.timer)
+            for loc in self.locs:
+                loc.update(self.timer)
             time.sleep(DELAY)
             self.timer += 1
             pass

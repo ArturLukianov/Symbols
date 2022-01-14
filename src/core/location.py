@@ -51,6 +51,8 @@ class Field(Location):
         self.seeds.append(seeds)
 
     def update(self, time):
+        super().update(time)
+
         ind_to_pop = []
         for ind, seed in enumerate(self.seeds):
             seed.turns_to_grow -= 1
@@ -64,12 +66,12 @@ class Field(Location):
                 ind_to_pop.append(ind)
                 self.seeds_count -= seed.value
 
-
-        new_seeds = []
-        for ind, seed in enumerate(self.seeds):
-            if ind not in ind_to_pop:
-                new_seeds.append(seed)
-        self.seeds = new_seeds
+        if len(ind_to_pop) != 0:
+            new_seeds = []
+            for ind, seed in enumerate(self.seeds):
+                if ind not in ind_to_pop:
+                    new_seeds.append(seed)
+            self.seeds = new_seeds
 
 
 class WaterSource(Location):

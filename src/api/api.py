@@ -4,7 +4,7 @@ import logging
 sys.path.append('.')
 sys.path.append('..')
 from src.core.worldthread import WorldThread
-from src.core import Tile, HumanPeasant, Cucumber, Well, Field
+from src.core import Location, HumanPeasant, Cucumber, Well, Field
 
 
 import eventlet
@@ -43,14 +43,18 @@ logger.addHandler(sh)
 def connect(sid, environ):
     print('connect', sid)
 
+@sio.event
+def get_locs(sid, environ):
+    sio.emit('locs', [])
+
 
 if __name__ == "__main__":
-    tiles = [Tile()]
-    tiles[0].chars.append(HumanPeasant())
-    tiles[0].items.append(Well())
-    tiles[0].chars[0].inventory.append(Cucumber())
-    tiles[0].items.append(Field())
-    world = WorldThread(tiles=tiles)
+    locs = [Location(), Well(), Field()]
+    locs[0].add_char(HumanPeasant())
+    locs[0].connect(locs[1])
+    locs[0].chars[0].inventory.append(Cucumber())
+    locs[0].connect(locs[2])
+    world = WorldThread(locs=locs)
     world.start()
 
 
