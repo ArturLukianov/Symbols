@@ -169,6 +169,11 @@ class Human(Character):
                 self.change_status('eating')
                 return
 
+        for ind, character in enumerate(tile.chars):
+            status = character.ask_food(self)
+            if status:
+                return
+
         self.short_memory['has food'] = False
         self.change_status(None)
 
@@ -176,3 +181,10 @@ class Human(Character):
         self.change_status('sleeping')
 
 
+    def ask_food(self, asker):
+        for i in range(len(self.inventory)):
+            if self.inventory[i].is_food:
+                food = self.inventory.pop(i)
+                asker.inventory.append(food)
+                return True
+        return False

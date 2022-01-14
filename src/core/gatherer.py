@@ -8,6 +8,7 @@ class HumanGatherer(Human):
 	def gather_resource(self):
 		if self.resource_source == None:
 			return 'no source'
+		self.go_to(self.resource_source)
 		if self.resource_source.amount <= 0:
 			return 'source empty'
 		resource = self.resource_source.take_resource()

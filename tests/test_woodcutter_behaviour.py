@@ -28,7 +28,3 @@ def test_woodcutter_source_search():
 
 def test_woodcutter_work_cycle():
 	assert True
-
-
-def test_woodcutter_can_keep_alive():
-	assert True

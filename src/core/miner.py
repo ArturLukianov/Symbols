@@ -35,6 +35,7 @@ class HumanMiner(HumanGatherer):
 		if self.sub_status == 'checking mine':
 			mine = self.short_memory.get('checking mine', None)
 			if mine != None:
+				self.go_to(mine)
 				if mine.amount > 0:
 					self.resource_source = mine
 				self.short_memory['checking mine'] = None
