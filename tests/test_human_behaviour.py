@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
-import os, sys
+import sys
+
 sys.path.append('.')
 sys.path.append('..')
 
@@ -8,51 +9,57 @@ from src.core import *
 
 
 def test_human_eat_food():
-    h = Human()
-    f = Cucumber()
-    f.value = 1000
-    h.hunger = 300
-    h.inventory.append(f)
+    '''Test that human can eat food from her inventory'''
+    human = Human()
+    food = Cucumber()
+    food.value = 1000
+    human.hunger = 300
+    human.inventory.append(food)
 
-    for i in range(10):
-        h.update(None, 500)
+    for _ in range(10):
+        human.update(500)
 
-    assert h.hunger > 300
+    assert human.hunger > 300
 
 
 def test_human_get_food():
-    loc = Location()
-    h = Human()
-    f = Cucumber()
+    '''Test that human can get food from current location'''
+    loc = Location(None, (0, 0))
+    human = Human()
+    food = Cucumber()
 
-    f.value = 1000
-    h.hunger = 300
+    food.value = 1000
+    human.hunger = 300
 
-    loc.items.append(f)
-    loc.chars.append(h)
+    loc.items.append(food)
+    loc.add_char(human)
 
     max_turns = 100
 
     for i in range(max_turns):
         loc.update(i)
-        print(h.hunger)
 
-    assert h.hunger > 1000
+    assert human.hunger > 1000
 
 
 def test_human_sleep():
-    h = Human()
+    '''Test that human is sleeping when night'''
+    human = Human()
 
-    for i in range(20):
-        h.update(None, 0)
-    assert h.status == 'sleeping'
+    for _ in range(20):
+        human.update(0)
+    assert human.status == 'sleeping'
+
 
 def test_human_starve():
-    h = Human()
-    l = Location()
+    '''Test that human is starving to death without food'''
+    human = Human()
+    loc = Location(None, (0, 0))
+
+    loc.add_char(human)
 
     for i in range(1000):
-        h.update(l, i)
+        loc.update(i)
 
-    assert h.hunger <= 0
-    assert not h.is_alive
+    assert human.hunger <= 0
+    assert not human.is_alive

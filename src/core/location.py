@@ -1,19 +1,43 @@
 from .item import Resource, Water, Ore, Wood
 
+
+mask = [
+    (0, 1),
+    (1, 0),
+    (0, -1),
+    (-1, 0)
+]
+
+
 class Location(object):
     name = 'Location'
     color = 'gray'
     size = 5
 
-    def __init__(self):
+    def __init__(self, world, pos):
         self.items = []
         self.chars = []
-        self.locs = []
+        self.pos = pos
+        self.world = world
+        if self.world is not None:
+            world.set_loc(self.pos, self)
+
+
+    def get_near_locs(self):
+        locs = []
+        for dx, dy in mask:
+            nx = self.pos[0] + dx
+            ny = self.pos[1] + dy
+            if nx >= 0 and ny >= 0 and \
+               nx < self.world.size[0] and ny < self.world.size[1] and \
+               self.world.locs[nx][ny] is not None:
+                locs.append(self.world.locs[nx][ny])
+        return locs
 
 
     def update(self, time):
         for char in self.chars:
-            char.update(self, time)
+            char.update(time)
 
         for item in self.items:
             item.update(self, time)
@@ -24,10 +48,6 @@ class Location(object):
             return False
         return object.__getattribute__(self, name)
 
-    def connect(self, loc):
-        self.locs.append(loc)
-        loc.locs.append(self)
-
     def add_char(self, char):
         self.chars.append(char)
         char.loc = self
@@ -35,9 +55,9 @@ class Location(object):
     def to_d3(self):
         return {
             'id': id(self),
-            'label': self.name,
+            'name': self.name,
             'color': self.color,
-            'size': self.size * 10
+            'val': self.size
         }
 
 
@@ -45,14 +65,14 @@ class Location(object):
 
 class Field(Location):
     name = 'Field'
-    color = 'green'
+    color = 'saddlebrown'
     is_plantable = True
     size = 20
 
     seeds_count = 0
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, world, pos):
+        super().__init__(world, pos)
         self.seeds = []
         self.fruits = []
 
@@ -61,6 +81,7 @@ class Field(Location):
         seeds.is_planted = True
         seeds.is_pickable = False
         self.seeds.append(seeds)
+        self.color = 'greenyellow'
 
     def update(self, time):
         super().update(time)
@@ -76,6 +97,7 @@ class Field(Location):
             if seed.turns_to_grow <= 0:
                 for i in range(seed.value):
                     self.fruits.append(seed.plant())
+                self.color = 'yellowgreen'
                 ind_to_pop.append(ind)
                 self.seeds_count -= seed.value
 
@@ -85,6 +107,9 @@ class Field(Location):
                 if ind not in ind_to_pop:
                     new_seeds.append(seed)
             self.seeds = new_seeds
+
+            if len(self.seeds) == 0 and len(self.fruits) == 0:
+                self.color = 'saddlebrown'
 
 
 class WaterSource(Location):
@@ -121,7 +146,7 @@ class Mine(ResourceSource):
     name = 'Mine'
     is_mine = True
     resource = 'iron'
-    color = 'brown'
+    color = 'goldenrod'
 
     def take_resource(self):
         if self.amount > 0:
@@ -131,6 +156,7 @@ class Mine(ResourceSource):
 class Forest(ResourceSource):
     is_forest = True
     resource = 'pine'
+    color = "darkgreen"
 
     def take_resource(self):
         if self.amount > 0:

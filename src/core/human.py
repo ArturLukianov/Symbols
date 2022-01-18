@@ -1,10 +1,8 @@
 #!/usr/bin/env python3
 import logging
-import random
 
 from .character import Character
-from .utils import is_night, is_day, random_name
-
+from .utils import is_day, is_night, random_name
 
 logger = logging.getLogger('symbols')
 logger.setLevel(logging.INFO)
@@ -63,7 +61,7 @@ class Human(Character):
             self.loc.chars.remove(self)
         next_loc.add_char(self)
 
-    def update(self, tile, time):
+    def update(self, time):
         if not self.is_alive:
             return
 
@@ -104,7 +102,7 @@ class Human(Character):
             return
 
         if self.status == 'working':
-            self.work(tile, time)
+            self.work(time)
             return
 
         if self.hunger < 600 and \
@@ -114,32 +112,32 @@ class Human(Character):
             self.change_status('eating')
 
         if self.status == 'resting':
-            self.rest(tile, time)
+            self.rest(time)
             return
 
         if self.status == 'eating':
-            self.eat(tile, time)
+            self.eat(time)
             return
 
         if self.status == 'getting food':
-            self.get_food(tile, time)
+            self.get_food(time)
             return
 
         if self.status == 'going to sleep':
-            self.go_sleep(tile, time)
+            self.go_sleep(time)
             return
 
-    def work(self, tile, time):
+    def work(self, time):
         self.change_status('resting')
 
-    def rest(self, tile, time):
+    def rest(self, time):
         if is_night(time) and self.status != 'eating' and \
            self.status != 'getting food':
             self.change_status('sleeping')
             return
 
 
-    def eat(self, tile, time):
+    def eat(self, time):
         if self.hunger > 700:
             self.change_status(None)
             return
@@ -155,20 +153,20 @@ class Human(Character):
 
         self.change_status('getting food')
 
-    def get_food(self, tile, time):
+    def get_food(self, time):
         for item in self.inventory:
             if item.is_food:
                 self.change_status('eating')
                 return
 
-        for ind, item in enumerate(tile.items):
+        for ind, item in enumerate(self.loc.items):
             if item.is_food:
-                tile.items.pop(ind)
+                self.loc.items.pop(ind)
                 self.inventory.append(item)
                 self.change_status('eating')
                 return
 
-        for ind, character in enumerate(tile.chars):
+        for ind, character in enumerate(self.loc.chars):
             status = character.ask_food(self)
             if status:
                 return
@@ -176,7 +174,7 @@ class Human(Character):
         self.short_memory['has food'] = False
         self.change_status(None)
 
-    def go_sleep(self, tile, time):
+    def go_sleep(self, time):
         self.change_status('sleeping')
 
 

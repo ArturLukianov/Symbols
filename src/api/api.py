@@ -4,7 +4,7 @@ import logging
 sys.path.append('.')
 sys.path.append('..')
 from src.core.worldthread import WorldThread
-from src.core import Location, HumanPeasant, Cucumber, Well, Field, Mine
+from src.core.generators import generate_locations
 
 
 import eventlet
@@ -39,14 +39,7 @@ logger.addHandler(ch)
 logger.addHandler(sh)
 
 
-locs = [Location(), Well(), Field(), Mine(10)]
-locs[0].add_char(HumanPeasant())
-locs[0].connect(locs[1])
-locs[0].chars[0].inventory.append(Cucumber())
-locs[0].connect(locs[2])
-locs[1].connect(locs[2])
-locs[0].connect(locs[3])
-world = WorldThread(locs=locs)
+world = WorldThread(locs=generate_locations())
 
 @sio.event
 def connect(sid, environ):
@@ -57,14 +50,42 @@ def connect(sid, environ):
         'links': []
     }
 
+    used = []
+
     for loc in world.locs:
         for link in loc.locs:
+            if link in used:
+                continue
             locs['links'].append({
                 'source': id(loc),
                 'target': id(link)
             })
+        used.append(loc)
 
     sio.emit('locs', locs)
+
+@sio.on('get_graph')
+def get_graph(data):
+
+    locs = {
+        'nodes': [loc.to_d3() for loc in world.locs],
+        'links': []
+    }
+
+    used = []
+
+    for loc in world.locs:
+        for link in loc.locs:
+            if link in used:
+                continue
+            locs['links'].append({
+                'source': id(loc),
+                'target': id(link)
+            })
+        used.append(loc)
+
+    sio.emit('locs', locs)
+
 
 
 if __name__ == "__main__":

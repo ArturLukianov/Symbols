@@ -8,17 +8,22 @@ from src.core import *
 
 
 def test_peasant_planting():
-    p = HumanPeasant()
-    s = CucumberSeeds()
-    s.value = 10
-    s.water_multiplier = 0
-    loc = Location()
-    field = Field()
+    '''Test peasant can plant seeds on nearby field'''
+    world = World((1, 2))
 
-    p.inventory.append(s)
+    peasant = HumanPeasant()
+    seeds = CucumberSeeds()
+    seeds.value = 10
+    seeds.water_multiplier = 0
+    loc = Location(world, (0, 0))
+    field = Field(world, (0, 0))
 
-    loc.add_char(p)
-    loc.connect(field)
+    world.set_loc((0, 0), loc)
+    world.set_loc((0, 1), field)
+
+    peasant.inventory.append(seeds)
+
+    loc.add_char(peasant)
 
     for i in range(100):
         loc.update(600 + i)
@@ -28,76 +33,70 @@ def test_peasant_planting():
 
 
 def test_peasant_gathering():
+    world = World((1, 2))
     p = HumanPeasant()
-    loc = Location()
-    field = Field()
+    loc = Location(world, (0, 0))
+    field = Field(world, (0, 1))
     c = Cucumber()
     p.hunger = 10000
 
     field.fruits.append(c)
     loc.add_char(p)
-    loc.connect(field)
 
     for i in range(200):
-        loc.update(600 + i)
-        field.update(600 + i)
+        world.update(i + 1)
 
     assert len(p.inventory) != 0
     assert len(field.fruits) == 0
 
 
 def test_peasant_work_cycle():
-    p = HumanPeasant()
-    p.hunger = 100000
-    loc = Location()
-    field = Field()
-    s = CucumberSeeds()
-    s.value = 10
-    s.water_multiplier = 0
+    world = World((1, 2))
+    peasant = HumanPeasant()
+    peasant.hunger = 100000
+    loc = Location(world, (0, 0))
+    field = Field(world, (0, 1))
+    seeds = CucumberSeeds()
+    seeds.value = 10
+    seeds.water_multiplier = 0
 
-    p.inventory.append(s)
-    loc.add_char(p)
-    loc.connect(field)
+    peasant.inventory.append(seeds)
+    loc.add_char(peasant)
 
     for i in range(800):
         loc.update(500 + i)
         field.update(500 + i)
 
-    assert len(p.inventory) != 0
-    assert p.inventory[0].is_food
+    assert len(peasant.inventory) != 0
+    assert peasant.inventory[0].is_food
 
 
 def test_peasant_can_keep_alive():
+    world = World((2, 2))
     p = HumanPeasant()
-    loc = Location()
-    field = Field()
+    loc = Location(world, (0, 0))
+    field = Field(world, (0, 1))
     c = CucumberSeeds()
-    well = Well()
+    well = Well(world, (1, 1))
 
     p.inventory.append(c)
     loc.add_char(p)
-    loc.connect(field)
-    field.connect(well)
 
     for i in range(31 * 1000):
-        loc.update(i)
-        field.update(i)
-        well.update(i)
+        world.update(i)
 
     assert p.is_alive
 
 
 def test_peasant_water_plants():
+    world = World((2, 2))
     p = HumanPeasant()
-    loc = Location()
-    field = Field()
+    loc = Location(world, (0, 0))
+    field = Field(world, (0, 1))
     s = CucumberSeeds()
-    well = Well()
+    well = Well(world, (1, 1))
 
-    loc.chars.append(p)
-    loc.connect(field)
-    loc.connect(well)
-    field.connect(well)
+    loc.add_char(p)
     field.plant(s)
 
     for i in range(80):

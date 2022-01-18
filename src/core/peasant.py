@@ -5,8 +5,8 @@ from .human import Human
 class HumanPeasant(Human):
     profession = 'peasant'
 
-    def rest(self, loc, time):
-        super().rest(loc, time)
+    def rest(self, time):
+        super().rest(time)
 
         if len(self.short_memory.get('checked fields', [])) != \
            self.short_memory.get('fields count', -1):
@@ -14,10 +14,10 @@ class HumanPeasant(Human):
             return
 
 
-    def work(self, loc, time):
+    def work(self, time):
         if self.sub_status == None:
             self.change_sub_status('checking fields')
-            self.long_memory['start location'] = loc
+            self.long_memory['start location'] = self.loc
 
 
         if self.sub_status == 'checking fields':
@@ -45,8 +45,8 @@ class HumanPeasant(Human):
                     has_seeds = False
                     for item in self.inventory:
                         if item.is_seed:
-                           has_seeds = True
-                           break
+                            has_seeds = True
+                            break
                     if has_seeds:
                         self.change_sub_status('planting')
                     else:
@@ -86,7 +86,7 @@ class HumanPeasant(Human):
 
         if self.sub_status == 'getting water':
             if self.short_memory.get('water source') is None:
-                for nloc in loc.locs:
+                for nloc in self.loc.get_near_locs():
                     if nloc.is_water_source:
                         self.short_memory['water source'] = nloc
             else:
@@ -97,12 +97,12 @@ class HumanPeasant(Human):
 
         if self.sub_status == 'going to unchecked ground':
             fields = 0
-            for nloc in loc.locs:
+            for nloc in self.loc.get_near_locs():
                 if nloc.is_plantable and \
                    nloc not in self.short_memory.get('checked fields', []):
                     fields += 1
             self.short_memory['fields count'] = fields
-            for nloc in loc.locs:
+            for nloc in self.loc.get_near_locs():
                 if nloc.is_plantable and \
                    nloc not in self.short_memory.get('checked fields', []):
                     self.target = nloc
